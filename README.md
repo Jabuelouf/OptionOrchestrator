@@ -4,6 +4,10 @@ An options analytics workbench that combines market data, quantitative models, d
 
 > **Portfolio project:** Option Orchestrator is an educational decision-support system. It does not execute trades and its output is not financial advice.
 
+![Option Orchestrator market dashboard](docs/images/dashboard.png)
+
+_The dashboard above uses the repository's deterministic demo-data provider, so the interface can be evaluated without paid API credentials._
+
 ## What it demonstrates
 
 - A layered FastAPI backend with explicit boundaries for input normalization, market data, analytics, validation, and orchestration
