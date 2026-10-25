@@ -1,0 +1,213 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "LiveSnapshot",
+  "type": "object",
+  "required": [
+    "meta",
+    "underlying",
+    "position",
+    "risk_limits"
+  ],
+  "properties": {
+    "meta": {
+      "type": "object",
+      "required": [
+        "timestamp",
+        "source",
+        "timezone"
+      ],
+      "properties": {
+        "timestamp": {
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        },
+        "timezone": {
+          "type": "string"
+        }
+      }
+    },
+    "underlying": {
+      "type": "object",
+      "required": [
+        "symbol",
+        "spot"
+      ],
+      "properties": {
+        "symbol": {
+          "type": "string"
+        },
+        "spot": {
+          "type": "number"
+        },
+        "session": {
+          "type": "string",
+          "enum": [
+            "pre",
+            "regular",
+            "post",
+            "unknown"
+          ]
+        },
+        "trend_1h": {
+          "type": "string"
+        },
+        "trend_4h": {
+          "type": "string"
+        }
+      }
+    },
+    "vol_surface": {
+      "type": "object",
+      "properties": {
+        "atm_iv": {
+          "type": "number"
+        },
+        "put25_iv": {
+          "type": "number"
+        },
+        "call25_iv": {
+          "type": "number"
+        },
+        "term_front_iv": {
+          "type": "number"
+        },
+        "term_back_iv": {
+          "type": "number"
+        }
+      }
+    },
+    "position": {
+      "type": "object",
+      "required": [
+        "strategy",
+        "legs",
+        "mark",
+        "entry_mark"
+      ],
+      "properties": {
+        "strategy": {
+          "type": "string"
+        },
+        "legs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": [
+              "type",
+              "side",
+              "qty",
+              "strike",
+              "expiry"
+            ],
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "call",
+                  "put",
+                  "stock",
+                  "future"
+                ]
+              },
+              "side": {
+                "type": "string",
+                "enum": [
+                  "long",
+                  "short"
+                ]
+              },
+              "qty": {
+                "type": "number"
+              },
+              "strike": {
+                "type": "number"
+              },
+              "expiry": {
+                "type": "string"
+              },
+              "iv": {
+                "type": "number"
+              },
+              "mark": {
+                "type": "number"
+              },
+              "bid": {
+                "type": "number"
+              },
+              "ask": {
+                "type": "number"
+              }
+            }
+          }
+        },
+        "mark": {
+          "type": "number"
+        },
+        "entry_mark": {
+          "type": "number"
+        },
+        "pnl_pct": {
+          "type": "number"
+        },
+        "liquidity_score": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      }
+    },
+    "greeks": {
+      "type": "object",
+      "properties": {
+        "delta": {
+          "type": "number"
+        },
+        "gamma": {
+          "type": "number"
+        },
+        "theta": {
+          "type": "number"
+        },
+        "vega": {
+          "type": "number"
+        }
+      }
+    },
+    "catalysts": {
+      "type": "object",
+      "properties": {
+        "next_event": {
+          "type": "string"
+        },
+        "days_to_event": {
+          "type": "number"
+        }
+      }
+    },
+    "risk_limits": {
+      "type": "object",
+      "required": [
+        "allow_undefined_risk",
+        "max_position_loss_pct",
+        "max_daily_loss_pct"
+      ],
+      "properties": {
+        "allow_undefined_risk": {
+          "type": "boolean"
+        },
+        "max_position_loss_pct": {
+          "type": "number"
+        },
+        "max_daily_loss_pct": {
+          "type": "number"
+        },
+        "max_contract_multiplier": {
+          "type": "number"
+        }
+      }
+    }
+  }
+}

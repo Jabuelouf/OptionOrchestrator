@@ -18,11 +18,16 @@ jobs:
           python-version: "3.11"
           cache: pip
       - run: python -m pip install -r requirements-dev.txt
-      - run: python -m ruff check backend
+      - run: python -m ruff check backend llm
       - run: python -m pytest -q
         working-directory: backend
         env:
           MARKET_DATA_PROVIDER: mock
+      - name: Validate LLM contracts and safety gates
+        working-directory: llm/evaluation
+        run: |
+          python scripts/validate_snapshot.py --snapshot scripts/example_snapshot.json
+          python scripts/validate_plan.py --snapshot scripts/example_snapshot.json --plan scripts/example_plan.json
 
   frontend:
     runs-on: ubuntu-latest

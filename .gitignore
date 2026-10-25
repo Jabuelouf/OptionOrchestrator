@@ -20,6 +20,14 @@ frontend/dist/
 *.sqlite3
 *.log
 
+# LLM data and generated artifacts
+llm/**/data/
+llm/**/artifacts/
+llm/**/checkpoints/
+llm/**/out/
+llm/**/*.pdf
+llm/**/*.jsonl
+
 .DS_Store
 Thumbs.db
 .idea/

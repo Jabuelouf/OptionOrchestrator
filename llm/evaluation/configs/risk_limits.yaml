@@ -1,0 +1,17 @@
+# Risk limits for REAL MONEY use (defaults; edit to your preferences)
+account:
+  currency: USD
+  max_daily_loss_pct: 1.0
+  max_position_loss_pct: 1.0
+  max_margin_usage_pct: 35.0
+
+options:
+  allow_undefined_risk: false   # recommended false
+  allow_naked_shorts: false     # recommended false
+  max_dte_roll: 45              # don't roll beyond this without explicit override
+  max_contract_multiplier: 2.0  # disallow rescue "doubling down" by default
+
+guardrails:
+  require_defined_max_loss: true
+  require_exit_triggers: true
+  require_missing_data_fallback: true

@@ -1,0 +1,68 @@
+{
+  "meta": {
+    "timestamp": "2026-02-03T04:45:15.092954Z",
+    "source": "example",
+    "timezone": "America/Denver"
+  },
+  "underlying": {
+    "symbol": "SPX",
+    "spot": 5000.0,
+    "session": "regular",
+    "trend_1h": "down",
+    "trend_4h": "down"
+  },
+  "vol_surface": {
+    "atm_iv": 22.0,
+    "put25_iv": 28.0,
+    "call25_iv": 20.0,
+    "term_front_iv": 24.0,
+    "term_back_iv": 21.0
+  },
+  "position": {
+    "strategy": "short_put_credit_spread",
+    "legs": [
+      {
+        "type": "put",
+        "side": "short",
+        "qty": 1,
+        "strike": 4960,
+        "expiry": "2026-02-06",
+        "mark": 3.1,
+        "bid": 3.05,
+        "ask": 3.15,
+        "iv": 28.0
+      },
+      {
+        "type": "put",
+        "side": "long",
+        "qty": 1,
+        "strike": 4920,
+        "expiry": "2026-02-06",
+        "mark": 1.4,
+        "bid": 1.35,
+        "ask": 1.45,
+        "iv": 30.0
+      }
+    ],
+    "mark": 1.7,
+    "entry_mark": 0.9,
+    "pnl_pct": -88.0,
+    "liquidity_score": 0.9
+  },
+  "greeks": {
+    "delta": -0.22,
+    "gamma": 0.015,
+    "theta": 0.08,
+    "vega": -0.12
+  },
+  "catalysts": {
+    "next_event": "CPI",
+    "days_to_event": 2
+  },
+  "risk_limits": {
+    "allow_undefined_risk": false,
+    "max_position_loss_pct": 1.0,
+    "max_daily_loss_pct": 1.0,
+    "max_contract_multiplier": 2.0
+  }
+}

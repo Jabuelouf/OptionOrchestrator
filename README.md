@@ -1,6 +1,6 @@
 # Option Orchestrator
 
-An options analytics workbench that combines market data, quantitative models, deterministic risk controls, and optional LLM-assisted strategy generation.
+An options analytics workbench built around a domain-adapted LLM, quantitative market analysis, and deterministic risk controls.
 
 > **Portfolio project:** Option Orchestrator is an educational decision-support system. It does not execute trades and its output is not financial advice.
 
@@ -14,7 +14,7 @@ _The dashboard above uses the repository's deterministic demo-data provider, so 
 - Options pricing, Greeks, volatility analysis, technical indicators, scenario analysis, and strategy comparison
 - Provider adapters with deterministic mock behavior for local development and automated testing
 - A React dashboard for market exploration, portfolio analysis, backtesting, alerts, and options-strategy visualization
-- Optional hosted-model integration with rule-based fallbacks and validation before recommendations are returned
+- Gemma 2 9B QLoRA training, 4-bit RunPod inference, structured strategy generation, and a deterministic verification firewall
 - PostgreSQL persistence with SQLAlchemy and Alembic migrations
 
 ## Architecture
@@ -26,18 +26,19 @@ flowchart LR
     ORCH --> INPUT[Input normalization]
     ORCH --> DATA[Market-data adapters]
     ORCH --> ANALYSIS[Greeks and scenarios]
-    ORCH --> KNOWLEDGE[Optional knowledge model]
+    ORCH --> KNOWLEDGE[Gemma 2 9B + LoRA adapter]
     ORCH --> VALIDATOR[Deterministic risk validator]
     API --> DB[(PostgreSQL / SQLite)]
 ```
 
-The central design rule is that probabilistic model output is advisory. Deterministic validation remains the final safety boundary, and no component submits orders.
+The LLM is the strategy-generation engine; the deterministic fallback exists for offline development and degraded operation. Probabilistic output remains advisory: deterministic validation is the final software safety boundary, and no component submits orders.
 
 ## Repository layout
 
 ```text
 backend/                 FastAPI application, domain layers, migrations, and tests
 frontend/                React and Vite client
+llm/                     QLoRA training, inference worker, prompts, schemas, and evaluation
 docs/                    Architecture, flow, and data-contract documentation
 .github/workflows/       Continuous integration
 docker-compose.yml       Optional local PostgreSQL service
@@ -102,7 +103,7 @@ It returns candidate adjustments together with quantitative context and validato
 
 ## Configuration
 
-All integrations are optional. Copy `.env.example` to `.env` and add only the providers you intend to use. Never commit real credentials or portfolio data.
+Copy `.env.example` to `.env` and add only the providers you intend to use. The interface runs with deterministic demo data locally; live LLM generation requires a RunPod endpoint, while training and self-hosted inference require Hugging Face model access. Never commit real credentials or portfolio data.
 
 For local persistence, start PostgreSQL with:
 
@@ -118,10 +119,10 @@ Without `DATABASE_URL`, local migrations use SQLite.
 
 - Provider availability and rate limits affect live-data features.
 - Backtests are analytical simulations, not brokerage-grade execution models.
-- Hosted knowledge-model support is optional; deterministic strategies remain available without it.
+- Deterministic strategies remain available for offline development when the LLM endpoint is unavailable.
 - Authentication, multi-user tenancy, and order execution are intentionally outside the current scope.
 
-See [Architecture](docs/ARCHITECTURE.md), [Data contracts](docs/DATA_CONTRACTS.md), and [Request flow](docs/FLOW.md) for implementation details.
+See [Architecture](docs/ARCHITECTURE.md), [LLM architecture](docs/LLM_ARCHITECTURE.md), [Data contracts](docs/DATA_CONTRACTS.md), and [Request flow](docs/FLOW.md) for implementation details.
 
 ## License
 

@@ -1,0 +1,59 @@
+{
+  "action": "OK",
+  "key_mechanism": [
+    "Short strike is being approached; near-strike gamma risk rises and IV expansion inflates spread value.",
+    "Defined-risk constraint suggests reducing risk or rolling to re-establish distance."
+  ],
+  "options": [
+    {
+      "name": "Reduce risk / partial close",
+      "objective": "Prevent max-loss if selloff continues.",
+      "mechanics": [
+        "Close 50\u2013100% of the spread to cap further loss.",
+        "Avoid adding naked short puts."
+      ],
+      "pros": [
+        "Stops further gamma/IV damage.",
+        "Simplifies risk."
+      ],
+      "cons": [
+        "Locks in realized loss.",
+        "May miss rebound."
+      ],
+      "triggers": [
+        "If spot trades below a defined support level.",
+        "If spread hits pre-set loss multiple."
+      ],
+      "max_risk_notes": [
+        "Do not exceed max daily loss limit.",
+        "Use limit orders if bid/ask widens."
+      ],
+      "orders": [
+        {
+          "instrument": "SPX",
+          "side": "buy",
+          "qty": 1,
+          "leg_type": "put",
+          "strike": 4960,
+          "expiry": "2026-02-06",
+          "defined_risk": true
+        },
+        {
+          "instrument": "SPX",
+          "side": "sell",
+          "qty": 1,
+          "leg_type": "put",
+          "strike": 4920,
+          "expiry": "2026-02-06",
+          "defined_risk": true
+        }
+      ]
+    }
+  ],
+  "risk_guardrails": [
+    "If catalyst risk is near (CPI), prioritize defense over repair.",
+    "Do not increase max loss beyond the original defined-risk width.",
+    "If missing greeks/marks, default to reducing exposure."
+  ],
+  "missing_data": []
+}

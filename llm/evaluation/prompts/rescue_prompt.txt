@@ -1,0 +1,14 @@
+You will be given a JSON "LIVE_SNAPSHOT" of an options position and market context.
+Return a JSON "RESCUE_PLAN" that matches the plan schema.
+
+Rules:
+- Propose 2–4 adjustment paths.
+- Default to defined-risk adjustments (no naked shorts) unless snapshot explicitly allows.
+- Never invent prices, IV, greeks, or OI values not present in LIVE_SNAPSHOT.
+- If critical fields are missing, set plan.action="INSUFFICIENT_DATA" and list missing fields,
+  then provide a conservative fallback (reduce/close/define-risk).
+
+LIVE_SNAPSHOT:
+{{SNAPSHOT_JSON}}
+
+Return RESCUE_PLAN JSON only.

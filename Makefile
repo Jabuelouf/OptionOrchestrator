@@ -6,9 +6,11 @@ install:
 
 test:
 	cd backend && python -m pytest -q
+	cd llm/evaluation && python scripts/validate_snapshot.py --snapshot scripts/example_snapshot.json
+	cd llm/evaluation && python scripts/validate_plan.py --snapshot scripts/example_snapshot.json --plan scripts/example_plan.json
 
 lint:
-	python -m ruff check backend
+	python -m ruff check backend llm
 	cd frontend && npm run lint
 
 build:

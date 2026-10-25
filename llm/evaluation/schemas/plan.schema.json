@@ -1,0 +1,151 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "RescuePlan",
+  "type": "object",
+  "required": [
+    "action",
+    "key_mechanism",
+    "options",
+    "risk_guardrails",
+    "missing_data"
+  ],
+  "properties": {
+    "action": {
+      "type": "string",
+      "enum": [
+        "OK",
+        "INSUFFICIENT_DATA",
+        "REJECTED"
+      ]
+    },
+    "key_mechanism": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1
+    },
+    "options": {
+      "type": "array",
+      "minItems": 0,
+      "maxItems": 4,
+      "items": {
+        "type": "object",
+        "required": [
+          "name",
+          "objective",
+          "mechanics",
+          "pros",
+          "cons",
+          "triggers",
+          "max_risk_notes",
+          "orders"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "objective": {
+            "type": "string"
+          },
+          "mechanics": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1
+          },
+          "pros": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1
+          },
+          "cons": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1
+          },
+          "triggers": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1
+          },
+          "max_risk_notes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1
+          },
+          "orders": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "instrument",
+                "side",
+                "qty",
+                "leg_type",
+                "strike",
+                "expiry",
+                "defined_risk"
+              ],
+              "properties": {
+                "instrument": {
+                  "type": "string"
+                },
+                "side": {
+                  "type": "string",
+                  "enum": [
+                    "buy",
+                    "sell"
+                  ]
+                },
+                "qty": {
+                  "type": "number"
+                },
+                "leg_type": {
+                  "type": "string",
+                  "enum": [
+                    "call",
+                    "put",
+                    "stock",
+                    "future"
+                  ]
+                },
+                "strike": {
+                  "type": "number"
+                },
+                "expiry": {
+                  "type": "string"
+                },
+                "defined_risk": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "risk_guardrails": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1
+    },
+    "missing_data": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}
