@@ -1,0 +1,588 @@
+/* ====================================================================
+   Component-level styles — finviz-inspired flat design
+   All colors reference CSS custom properties from index.css themes
+   ==================================================================== */
+
+/* ---------- StockSearch ---------- */
+.stock-search-container {
+    position: relative;
+    width: 100%;
+}
+
+.stock-search-input {
+    width: 100%;
+    padding: 4px 8px;
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: var(--header-fg);
+    font-family: var(--font);
+    font-size: 11px;
+}
+
+.stock-search-input::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+}
+
+.stock-search-input:focus {
+    outline: none;
+    border-color: rgba(255, 255, 255, 0.5);
+    background: rgba(255, 255, 255, 0.18);
+}
+
+/* ---------- Options chain table ---------- */
+.options-chain-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11px;
+    font-variant-numeric: tabular-nums;
+}
+
+.options-chain-table th,
+.options-chain-table td {
+    padding: 2px 5px;
+    white-space: nowrap;
+}
+
+.options-chain-table th {
+    background: var(--panel);
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 10px;
+    letter-spacing: 0.04em;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.options-chain-table td {
+    font-family: var(--mono);
+    border-bottom: 1px solid var(--border-light);
+}
+
+.options-chain-table tbody tr:nth-child(even) {
+    background: var(--zebra);
+}
+
+.options-chain-table tbody tr:hover {
+    background: var(--highlight);
+}
+
+.options-chain-table .col-bid,
+.options-chain-table .col-ask,
+.options-chain-table .col-last {
+    width: 60px;
+    text-align: right;
+}
+
+.options-chain-table .col-iv {
+    width: 50px;
+    text-align: right;
+    color: var(--muted);
+}
+
+.options-chain-table .col-delta,
+.options-chain-table .col-theta {
+    width: 45px;
+    text-align: right;
+    color: var(--fg-secondary);
+}
+
+.options-chain-table .col-strike {
+    width: 70px;
+    text-align: center;
+    font-weight: 700;
+    background: var(--panel);
+    border-left: 2px solid var(--border);
+    border-right: 2px solid var(--border);
+}
+
+.options-chain-table .itm-call {
+    background: var(--pos-bg);
+}
+
+.options-chain-table .itm-put {
+    background: var(--neg-bg);
+}
+
+.options-chain-table .atm-row .col-strike {
+    background: var(--badge-bg);
+    color: var(--badge-fg);
+}
+
+.options-chain-container {
+    max-height: 500px;
+    overflow-y: auto;
+    border: 1px solid var(--border);
+}
+
+.options-chain-table .calls-header {
+    color: var(--pos);
+}
+
+.options-chain-table .puts-header {
+    color: var(--neg);
+}
+
+/* ---------- Strategy cards ---------- */
+.strategy-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding-bottom: var(--space-sm);
+    border-bottom: 1px solid var(--border);
+    margin-bottom: var(--space-sm);
+}
+
+.strategy-title {
+    font-size: 12px;
+    font-weight: 700;
+    margin: 0;
+}
+
+.strategy-type {
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+}
+
+.confidence-badge {
+    padding: 1px 6px;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--badge-fg);
+}
+
+.strategy-legs {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin-bottom: var(--space-sm);
+    font-family: var(--mono);
+    font-size: 11px;
+}
+
+.leg {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+}
+
+.leg.buy {
+    color: var(--pos);
+}
+
+.leg.sell {
+    color: var(--neg);
+}
+
+.leg-action {
+    font-weight: 600;
+    width: 36px;
+}
+
+.strategy-metrics {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3px;
+    font-size: 11px;
+}
+
+.metric-row {
+    display: flex;
+    justify-content: space-between;
+    color: var(--fg-secondary);
+}
+
+.metric-row span:last-child {
+    font-weight: 600;
+    color: var(--fg);
+}
+
+.no-strategies {
+    text-align: center;
+    padding: var(--space-xl);
+    color: var(--muted);
+}
+
+/* Strategy details expanded */
+.strategy-details-expanded {
+    margin-top: var(--space-md);
+    padding-top: var(--space-sm);
+    border-top: 1px solid var(--border);
+}
+
+.strategy-details-expanded h4 {
+    margin: var(--space-md) 0 var(--space-xs);
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    border-top: 1px solid var(--border);
+    padding-top: var(--space-sm);
+}
+
+.strategy-details-expanded table {
+    font-size: 11px;
+}
+
+.strategy-details-expanded th {
+    padding: 3px 5px;
+    color: var(--muted);
+    font-weight: 600;
+    border-bottom: 1px solid var(--border);
+}
+
+.strategy-details-expanded td {
+    padding: 3px 5px;
+}
+
+/* ---------- Greeks display ---------- */
+.greeks-display {
+    padding: var(--space-sm);
+    background: var(--bg-alt);
+    border: 1px solid var(--border);
+}
+
+.greeks-title {
+    margin: 0 0 var(--space-xs);
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.greeks-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 4px;
+}
+
+.greek-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 3px;
+}
+
+.greek-label {
+    font-size: 9px;
+    color: var(--muted);
+    text-transform: uppercase;
+}
+
+.greek-symbol {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--fg-secondary);
+}
+
+.greek-value {
+    font-size: 12px;
+    font-weight: 700;
+    font-family: var(--mono);
+}
+
+.greeks-display-compact {
+    display: flex;
+    gap: var(--space-md);
+    flex-wrap: wrap;
+}
+
+.greek-compact {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    font-family: var(--mono);
+    font-size: 11px;
+}
+
+/* ---------- Covered call / strategy tab shared ---------- */
+.covered-call-tab,
+.strategy-tab {
+    padding: var(--space-sm) 0;
+}
+
+.covered-call-header,
+.strategy-tab-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-md);
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+}
+
+.covered-call-header h2,
+.strategy-tab-header h2 {
+    margin: 0;
+    font-size: 13px;
+}
+
+.objective-selector {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.objective-selector label {
+    font-size: 11px;
+    color: var(--muted);
+}
+
+.objective-buttons {
+    display: flex;
+    gap: 2px;
+}
+
+.objective-btn {
+    padding: 3px 8px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--fg-secondary);
+    font-size: 11px;
+    cursor: pointer;
+}
+
+.objective-btn:hover {
+    background: var(--panel);
+}
+
+.objective-btn.active {
+    background: var(--badge-bg);
+    color: var(--badge-fg);
+    border-color: var(--badge-bg);
+}
+
+.covered-call-loading,
+.covered-call-error {
+    text-align: center;
+    padding: var(--space-xl);
+    color: var(--muted);
+}
+
+.covered-call-error {
+    color: var(--neg);
+}
+
+.analysis-summary {
+    display: flex;
+    gap: var(--space-lg);
+    flex-wrap: wrap;
+}
+
+.summary-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.summary-item .label {
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+}
+
+.summary-item .value {
+    font-family: var(--mono);
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.covered-call-table-container {
+    margin-top: var(--space-md);
+    overflow-x: auto;
+    border: 1px solid var(--border);
+}
+
+.covered-call-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11px;
+}
+
+.covered-call-table th,
+.covered-call-table td {
+    padding: 3px 6px;
+    text-align: left;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.covered-call-table th {
+    background: var(--panel);
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 10px;
+    color: var(--muted);
+}
+
+.covered-call-table td {
+    font-family: var(--mono);
+}
+
+.covered-call-table tbody tr:nth-child(even) {
+    background: var(--zebra);
+}
+
+.covered-call-table tbody tr:hover {
+    background: var(--highlight);
+}
+
+.covered-call-table .top-pick {
+    background: var(--pos-bg);
+}
+
+.covered-call-table .strike {
+    font-weight: 700;
+}
+
+.covered-call-table .premium {
+    color: var(--pos);
+}
+
+/* ---------- Payoff chart ---------- */
+.payoff-chart-container {
+    background: var(--bg-alt);
+    border: 1px solid var(--border);
+    padding: var(--space-sm);
+}
+
+/* ---------- Legs table container ---------- */
+.legs-table-container {
+    margin-top: 4px;
+    overflow-x: auto;
+}
+
+/* ---------- Animations ---------- */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(4px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.3s ease-out forwards;
+}
+
+/* ---------- News card ---------- */
+.news-feed {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.news-card {
+    display: flex;
+    gap: var(--space-sm);
+    padding: 3px 5px;
+    text-decoration: none;
+    color: inherit;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.news-card:hover {
+    background: var(--highlight);
+}
+
+.news-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.news-title {
+    font-size: 11px;
+    font-weight: 500;
+    margin: 0;
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.news-meta {
+    display: flex;
+    gap: var(--space-sm);
+    font-size: 10px;
+    color: var(--muted);
+}
+
+.news-source {
+    font-weight: 600;
+    color: var(--link);
+}
+
+/* ---------- Metric card ---------- */
+.metric-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-sm);
+    border: 1px solid var(--border);
+}
+
+.metric-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.metric-label {
+    font-size: 10px;
+    color: var(--muted);
+}
+
+.metric-value {
+    font-size: 13px;
+    font-weight: 700;
+    font-family: var(--mono);
+}
+
+.metric-change {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 1px 5px;
+}
+
+.change-positive {
+    background: var(--pos-bg);
+    color: var(--pos);
+}
+
+.change-negative {
+    background: var(--neg-bg);
+    color: var(--neg);
+}
+
+.change-neutral {
+    background: var(--highlight);
+    color: var(--muted);
+}
+
+/* ---------- Scrollbar (dark theme) ---------- */
+[data-theme="dark"] ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2);
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 3px;
+}
+
+@media (max-width: 480px) {
+    .greeks-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
