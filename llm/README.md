@@ -5,11 +5,18 @@ The LLM is a first-class component of Option Orchestrator. It proposes structure
 ## Model
 
 - Base model: `google/gemma-2-9b-it`
-- Adaptation: parameter-efficient LoRA fine-tuning
+- Adapter: `jabuelouf/Option-Advisor-Gemma-2-9b` (private)
+- Adaptation: 4-bit QLoRA with rank 64, alpha 128, and dropout 0.05
+- Target modules: attention projections plus gated-MLP projections
+- Selected artifact: `checkpoint-1050` (`eval_loss = 1.18061`)
 - Deployment: 4-bit quantized inference on a RunPod serverless worker
 - Runtime contract: JSON strategy candidates consumed by `backend/orchestrator_layer/knowledge_gateway.py`
 
-The trained adapter is referenced by `HF_ADAPTER_ID`. Model weights and adapters are deliberately not stored in Git.
+The trained adapter is referenced by `HF_ADAPTER_ID`, and the selected checkpoint
+by `HF_ADAPTER_SUBFOLDER`. Model weights and adapters are deliberately not stored
+in Git. Checkpoint 1300 remains available for task-level comparison; checkpoint
+1050 is the configured default because the trainer recorded it as the best
+validation checkpoint.
 
 ## Layout
 
@@ -32,4 +39,5 @@ The model never receives brokerage credentials and never submits orders. Missing
 
 Raw books, extracted text, generated datasets, checkpoints, and adapters are excluded from this repository. Only source code, schemas, prompts, and synthetic examples are public. Before reproducing training, use source material you are licensed to process and document dataset provenance in the resulting model card.
 
-See [LLM architecture](../docs/LLM_ARCHITECTURE.md) for the complete lifecycle.
+See the [model card](../docs/MODEL_CARD.md) and
+[LLM architecture](../docs/LLM_ARCHITECTURE.md) for the complete lifecycle.

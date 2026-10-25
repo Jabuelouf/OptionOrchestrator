@@ -13,18 +13,19 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 class LLMConfig:
     # provider must be "local_transformers" for this implementation
     provider: str
-    model_name: str                    # HF repo id or local path
-    adapter_name: Optional[str] = None # Optional PEFT adapter repo or local path
+    model_name: str  # HF repo id or local path
+    adapter_name: Optional[str] = None  # Optional PEFT adapter repo or local path
+    adapter_subfolder: Optional[str] = None  # Optional checkpoint directory
     temperature: float = 0.2
     max_tokens: int = 800
 
     # Optional generation/config knobs
-    device: str = "auto"               # "auto", "cuda", "cpu", "mps"
-    dtype: str = "auto"                # "auto", "float16", "bfloat16", "float32"
-    load_in_4bit: bool = False         # requires bitsandbytes
-    load_in_8bit: bool = False         # requires bitsandbytes
+    device: str = "auto"  # "auto", "cuda", "cpu", "mps"
+    dtype: str = "auto"  # "auto", "float16", "bfloat16", "float32"
+    load_in_4bit: bool = False  # requires bitsandbytes
+    load_in_8bit: bool = False  # requires bitsandbytes
     trust_remote_code: bool = False
-    use_chat_template: bool = True     # uses tokenizer.apply_chat_template if available
+    use_chat_template: bool = True  # uses tokenizer.apply_chat_template if available
 
 
 def _resolve_dtype(dtype: str):
@@ -67,7 +68,14 @@ class LLMClient:
         )
         self.model = AutoModelForCausalLM.from_pretrained(cfg.model_name, token=token, **model_kwargs)
         if cfg.adapter_name:
-            self.model = PeftModel.from_pretrained(self.model, cfg.adapter_name, token=token)
+            adapter_kwargs: Dict[str, Any] = {"token": token}
+            if cfg.adapter_subfolder:
+                adapter_kwargs["subfolder"] = cfg.adapter_subfolder
+            self.model = PeftModel.from_pretrained(
+                self.model,
+                cfg.adapter_name,
+                **adapter_kwargs,
+            )
 
         # If device_map not used, move model
         if cfg.device != "auto":

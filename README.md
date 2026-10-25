@@ -8,13 +8,36 @@ An options analytics workbench built around a domain-adapted LLM, quantitative m
 
 _The dashboard above uses the repository's deterministic demo-data provider, so the interface can be evaluated without paid API credentials._
 
+## The model at the center of the system
+
+Option Orchestrator is built around a domain-adapted **Gemma 2 9B** model. The
+model is not a decorative chat layer: it consumes normalized position, market,
+and account context and generates structured rescue plans for distressed options
+positions. Those proposals then pass through JSON-schema checks and deterministic
+risk rules before they can be shown to a user.
+
+| Model detail | Recorded value |
+| --- | --- |
+| Base model | `google/gemma-2-9b-it` |
+| Fine-tuning method | 4-bit QLoRA / PEFT |
+| LoRA configuration | rank 64, alpha 128, dropout 0.05; attention and MLP projections |
+| Selected checkpoint | `checkpoint-1050` |
+| Selection metric | validation loss `1.18061` |
+| Serving path | private Hugging Face adapter on a 4-bit RunPod worker |
+
+The training state identifies checkpoint 1050 as the best validation checkpoint;
+checkpoint 1300 is retained as the final saved checkpoint for comparative
+evaluation. Validation loss is a selection signal, not a claim of financial
+correctness. See the [model card](docs/MODEL_CARD.md) for provenance, limitations,
+and evaluation guidance.
+
 ## What it demonstrates
 
 - A layered FastAPI backend with explicit boundaries for input normalization, market data, analytics, validation, and orchestration
 - Options pricing, Greeks, volatility analysis, technical indicators, scenario analysis, and strategy comparison
 - Provider adapters with deterministic mock behavior for local development and automated testing
 - A React dashboard for market exploration, portfolio analysis, backtesting, alerts, and options-strategy visualization
-- Gemma 2 9B QLoRA training, 4-bit RunPod inference, structured strategy generation, and a deterministic verification firewall
+- An end-to-end model lifecycle: Gemma 2 9B QLoRA training, checkpoint selection, 4-bit RunPod inference, structured generation, and deterministic verification
 - PostgreSQL persistence with SQLAlchemy and Alembic migrations
 
 ## Architecture
@@ -103,7 +126,7 @@ It returns candidate adjustments together with quantitative context and validato
 
 ## Configuration
 
-Copy `.env.example` to `.env` and add only the providers you intend to use. The interface runs with deterministic demo data locally; live LLM generation requires a RunPod endpoint, while training and self-hosted inference require Hugging Face model access. Never commit real credentials or portfolio data.
+Copy `.env.example` to `.env` and add only the providers you intend to use. The interface runs with deterministic demo data locally; live LLM generation requires a RunPod endpoint. The referenced adapter is private, so independent deployments must have authorized Hugging Face access or substitute their own compatible adapter. Never commit real credentials or portfolio data.
 
 For local persistence, start PostgreSQL with:
 
@@ -122,7 +145,7 @@ Without `DATABASE_URL`, local migrations use SQLite.
 - Deterministic strategies remain available for offline development when the LLM endpoint is unavailable.
 - Authentication, multi-user tenancy, and order execution are intentionally outside the current scope.
 
-See [Architecture](docs/ARCHITECTURE.md), [LLM architecture](docs/LLM_ARCHITECTURE.md), [Data contracts](docs/DATA_CONTRACTS.md), and [Request flow](docs/FLOW.md) for implementation details.
+See [Architecture](docs/ARCHITECTURE.md), [LLM architecture](docs/LLM_ARCHITECTURE.md), [Model card](docs/MODEL_CARD.md), [Data contracts](docs/DATA_CONTRACTS.md), and [Request flow](docs/FLOW.md) for implementation details.
 
 ## License
 

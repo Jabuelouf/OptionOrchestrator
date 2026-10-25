@@ -14,6 +14,7 @@ def test_public_llm_assets_are_present_and_parseable() -> None:
         LLM_ROOT / "evaluation" / "prompts" / "analyst_system.txt",
         LLM_ROOT / "evaluation" / "schemas" / "snapshot.schema.json",
         LLM_ROOT / "evaluation" / "schemas" / "plan.schema.json",
+        REPO_ROOT / "docs" / "MODEL_CARD.md",
     ]
     assert all(path.is_file() and path.stat().st_size > 0 for path in expected)
 
@@ -37,3 +38,14 @@ def test_no_model_artifacts_are_tracked_in_llm_tree() -> None:
     forbidden_suffixes = {".bin", ".ckpt", ".gguf", ".onnx", ".pt", ".pth", ".safetensors"}
     tracked_candidates = [path for path in LLM_ROOT.rglob("*") if path.is_file()]
     assert not [path for path in tracked_candidates if path.suffix.lower() in forbidden_suffixes]
+
+
+def test_public_configuration_selects_recorded_best_checkpoint() -> None:
+    env_example = (REPO_ROOT / ".env.example").read_text(encoding="utf-8")
+    model_config = (LLM_ROOT / "evaluation" / "configs" / "model.yaml").read_text(
+        encoding="utf-8"
+    )
+
+    assert "HF_ADAPTER_ID=jabuelouf/Option-Advisor-Gemma-2-9b" in env_example
+    assert "HF_ADAPTER_SUBFOLDER=checkpoint-1050" in env_example
+    assert "adapter_subfolder: checkpoint-1050" in model_config

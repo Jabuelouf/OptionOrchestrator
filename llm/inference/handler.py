@@ -12,6 +12,7 @@ from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
 
 BASE_MODEL_ID = os.getenv("HF_BASE_MODEL_ID", "google/gemma-2-9b-it")
 ADAPTER_ID = os.getenv("HF_ADAPTER_ID", "")
+ADAPTER_SUBFOLDER = os.getenv("HF_ADAPTER_SUBFOLDER", "").strip()
 
 model = None
 tokenizer = None
@@ -35,7 +36,10 @@ def load_model() -> None:
         device_map="auto",
         token=token,
     )
-    model = PeftModel.from_pretrained(base, ADAPTER_ID, token=token)
+    adapter_kwargs = {"token": token}
+    if ADAPTER_SUBFOLDER:
+        adapter_kwargs["subfolder"] = ADAPTER_SUBFOLDER
+    model = PeftModel.from_pretrained(base, ADAPTER_ID, **adapter_kwargs)
     model.eval()
 
     tokenizer = AutoTokenizer.from_pretrained(BASE_MODEL_ID, token=token)
@@ -80,9 +84,14 @@ def generate(job_input: dict[str, Any]) -> str:
     return tokenizer.decode(generated_tokens, skip_special_tokens=True).strip()
 
 
-def handler(job: dict[str, Any]) -> dict[str, str]:
+def handler(job: dict[str, Any]) -> dict[str, Any]:
     try:
-        return {"response": generate(job.get("input", {})), "model": BASE_MODEL_ID}
+        return {
+            "response": generate(job.get("input", {})),
+            "base_model": BASE_MODEL_ID,
+            "adapter": ADAPTER_ID,
+            "adapter_subfolder": ADAPTER_SUBFOLDER or None,
+        }
     except Exception as error:
         return {"error": str(error)}
 
