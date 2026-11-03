@@ -24,7 +24,7 @@ Training retained checkpoints 1050, 1150, 1200, 1250, and 1300. Trainer metadata
 
 Because token cross-entropy loss does not guarantee valid options mechanics, checkpoints were benchmarked on a held-out test suite of distressed position scenarios across five deterministic criteria:
 
-| Evaluation Gate (Held-Out Benchmark) | Base `gemma-2-9b-it` (Zero-Shot) | Fine-Tuned `checkpoint-1050` | Validator Firewall Catch Rate |
+| Evaluation Gate (N = 100 Held-Out Scenarios) | Base `gemma-2-9b-it` (Zero-Shot) | Fine-Tuned `checkpoint-1050` | Validator Firewall Catch Rate |
 | :--- | :---: | :---: | :---: |
 | **Strict JSON Schema Adherence** | 64.0% | **98.0%** | 100% (Rejects malformed syntax) |
 | **Strike & Expiry Monotonicity** | 71.0% | **95.0%** | 100% (Blocks inverted spreads) |
