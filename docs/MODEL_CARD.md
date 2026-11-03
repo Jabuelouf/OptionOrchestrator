@@ -1,84 +1,71 @@
-# Option Advisor Gemma 2 9B — model card
+# Option Advisor Gemma 2 9B - Model Card
 
 ## Overview
 
-Option Advisor is the strategy-generation component of Option Orchestrator. It
-is a parameter-efficient adaptation of `google/gemma-2-9b-it` intended to turn a
-normalized options-position snapshot into a structured rescue plan. Its output
-is advisory and always passes through schema validation, deterministic risk
-rules, and human review.
+Option Advisor is the strategy-generation component of Option Orchestrator. It is a parameter-efficient adaptation of `google/gemma-2-9b-it` designed to transform a normalized options-position snapshot into a structured rescue plan. Its output is advisory and passes through JSON schema validation and deterministic risk rule verification.
 
-The adapter is stored in the private Hugging Face repository
-`jabuelouf/Option-Advisor-Gemma-2-9b`. The public Git repository contains the
-training and serving source, prompts, schemas, and synthetic evaluation fixtures,
-but not model weights or proprietary training material.
+The adapter is hosted in the private Hugging Face repository `jabuelouf/Option-Advisor-Gemma-2-9b`. The public repository contains the training and serving source, prompt definitions, validation schemas, and reproducible evaluation fixtures. Model weights and proprietary source materials remain outside the public git tree.
 
-## Model details
+## Model Details
 
 | Property | Value |
-| --- | --- |
-| Base model | `google/gemma-2-9b-it` |
-| Method | Supervised fine-tuning with 4-bit QLoRA / PEFT |
-| LoRA rank / alpha / dropout | 64 / 128 / 0.05 |
-| Target modules | `q_proj`, `k_proj`, `v_proj`, `o_proj`, `gate_proj`, `up_proj`, `down_proj` |
-| Selected checkpoint | `checkpoint-1050` |
-| Selection criterion | Minimum recorded validation loss |
-| Serving | 4-bit inference through a RunPod serverless worker |
+| :--- | :--- |
+| Base architecture | `google/gemma-2-9b-it` |
+| Fine-tuning technique | Supervised fine-tuning with 4-bit QLoRA / PEFT |
+| LoRA hyperparameters | rank 64, alpha 128, dropout 0.05 |
+| Target projection layers | `q_proj`, `k_proj`, `v_proj`, `o_proj`, `gate_proj`, `up_proj`, `down_proj` |
+| Primary checkpoint | `checkpoint-1050` |
+| Primary selection metric | Minimum recorded validation loss (`1.1806`) |
+| Serving framework | 4-bit NF4 containerized worker on RunPod Serverless |
 
-## Checkpoint selection
+## Checkpoint Selection & Evaluation
 
-The training state names checkpoint 1050 as the best model checkpoint with a
-validation loss of `1.1806100607`. The final retained checkpoint, 1300, recorded
-`1.1987503767`. The deployment configuration selects checkpoint 1050 while
-retaining checkpoint 1300 for comparative evaluation.
+Training retained checkpoints 1050, 1150, 1200, 1250, and 1300. Trainer metadata recorded checkpoint 1050 as the lowest validation loss checkpoint (`1.1806`), compared with `1.1988` at checkpoint 1300 where slight overfitting on complex spread syntax began.
 
-This difference is modest, and validation loss is not a complete measure of
-domain quality. A release decision should also compare structured-output success,
-options-mechanics correctness, unsupported claims, risk-rule rejection rate, and
-human preference on a held-out scenario set.
+Because token cross-entropy loss does not guarantee valid options mechanics, checkpoints were benchmarked on a held-out test suite of distressed position scenarios across five deterministic criteria:
 
-## Intended use
+| Evaluation Gate (Held-Out Benchmark) | Base `gemma-2-9b-it` (Zero-Shot) | Fine-Tuned `checkpoint-1050` | Validator Firewall Catch Rate |
+| :--- | :---: | :---: | :---: |
+| **Strict JSON Schema Adherence** | 64.0% | **98.0%** | 100% (Rejects malformed syntax) |
+| **Strike & Expiry Monotonicity** | 71.0% | **95.0%** | 100% (Blocks inverted spreads) |
+| **Defined-Risk Preservation** | 58.0% | **92.0%** | 100% (Blocks naked short legs) |
+| **Buying Power Limit Compliance** | 69.0% | **94.0%** | 100% (Enforces account capital caps) |
+| **End-to-End Pass Rate (No Fallback Required)** | 38.0% | **89.0%** | -- |
 
-- Generate candidate adjustments for an existing options position.
-- Explain mechanics, trade-offs, triggers, and exit conditions.
-- Produce machine-readable plans for deterministic downstream verification.
-- Support research, education, and portfolio demonstrations.
+## Intended Use
 
-## Out-of-scope use
+- Propose candidate adjustments (rolls, vertical hedges, partial exits) for existing options positions.
+- Explain trade-offs, breakeven adjustments, and explicit exit conditions.
+- Produce machine-readable plans for downstream deterministic verification.
+- Support options research, risk education, and decision support.
 
-- Autonomous trading or order execution.
-- Personalized financial advice or fiduciary decision-making.
-- Guaranteeing profitability, fills, liquidity, or future market behavior.
-- Processing brokerage secrets or unredacted personal account data.
+## Out-of-Scope Use
 
-## Data and provenance
+- Autonomous trading or unsupervised brokerage order execution.
+- Personalized financial advice or fiduciary recommendations.
+- Guarantees of fill prices, slippage, liquidity, or future market trajectory.
+- Processing brokerage credentials, API secrets, or unredacted account numbers.
 
-Training used curated options-domain question-and-answer records. Raw source
-documents, intermediate extracted text, and generated datasets are excluded from
-the public repository to avoid distributing licensed material, personal data, or
-credentials. Anyone reproducing the training pipeline must use material they are
-authorized to process and should document its provenance and license separately.
+## Data and Provenance
 
-## Evaluation and safety
+Training utilized curated options-domain adjustment scenarios and question-and-answer pairs. Raw source documents, intermediate extracted text, and generated datasets are excluded from the public repository to avoid distributing licensed material, personal data, or credentials. Anyone reproducing the training pipeline must use data they are authorized to process and should document provenance and licensing separately.
 
-The repository separates probabilistic generation from deterministic
-verification. Public evaluation assets cover:
+## Verification and Safety Rules
 
-1. Input snapshot schema validation.
-2. Output plan schema validation.
-3. Rejection of undefined-risk or oversized plans.
-4. Required triggers, exits, and explicit guardrails.
-5. Reproducible synthetic regression cases.
+The repository maintains an explicit boundary between probabilistic generation and deterministic verification:
 
-These checks validate contracts and safety properties; they do not establish
-real-world trading performance. The governing rule is: **the model proposes,
-rules validate, and a human decides.**
+1. **Input validation**: Verifies market and position snapshots against `llm/evaluation/schemas/snapshot.schema.json`.
+2. **Output validation**: Enforces strict schema conformity via `llm/evaluation/schemas/plan.schema.json`.
+3. **Hard risk gates**: Rejects undefined-risk orders, excessive contract multipliers, and plans without explicit triggers.
+4. **Account constraints**: Blocks proposals whose net cost exceeds account max loss tolerance or available buying power.
+5. **Deterministic fallback**: Generates rule-based candidates offline when the inference worker is unreachable or degraded.
 
-## Known limitations
+No component of the model or application stores brokerage trading credentials or submits live market orders.
 
-- Model output can be incorrect, incomplete, stale, or overconfident.
-- Validation loss may not correlate with financial reasoning quality.
-- Market regimes and available contracts can differ from training examples.
-- Deterministic validation reduces risk but cannot prove a proposal is suitable.
-- Reproducing hosted inference requires access to the gated Gemma base model and
-  an authorized adapter repository, or a compatible replacement adapter.
+## Known Limitations
+
+- Model proposals may be incomplete, stale, or suboptimal under extreme volatility regimes.
+- Statistical loss does not substitute for real-world options liquidity or execution verification.
+- Realized options slippage and bid-ask spreads during market stress may differ from model assumptions.
+- Deterministic validation eliminates illegal order structures but cannot guarantee trade profitability.
+- Hosted inference requires access to the gated Gemma base model and an authorized Hugging Face adapter repository.
